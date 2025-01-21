@@ -27,7 +27,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializa extensiones
 db.init_app(app)
 jwt.init_app(app)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Registra blueprints
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
