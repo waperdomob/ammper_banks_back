@@ -27,7 +27,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializa extensiones
 db.init_app(app)
 jwt.init_app(app)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {
+    "origins": "https://ammper-banks-front.vercel.app",
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 
 # Registra blueprints
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
