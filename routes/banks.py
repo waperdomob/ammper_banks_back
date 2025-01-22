@@ -17,7 +17,7 @@ def get_banks():
     if response.status_code == 200:
         return response.json(), 200
     else:
-        return {"error": "Failed to fetch banks", "details": response.text}, response.status_code
+        return jsonify({"error": "Failed to fetch banks", "details": response.text}), response.status_code
 
 @banks_bp.route('/transactions', methods=['POST'])
 @jwt_required()
@@ -26,15 +26,15 @@ def create_link_and_get_transactions():
     data = request.json
     payload = {
         "institution": data["institution"],
-        "username": "test_user",
-        "password": "test_password"
+        "username": "username",
+        "password": "password"
     }
 
     response_link = requests.post(url_links, json=payload, auth=(SECRET_ID, SECRET_PASSWORD))
 
     if response_link.status_code == 201:
         link_id = response_link.json()["id"]
-        
+
         # Intentar obtener transacciones con reintentos
         max_retries = 5
         for _ in range(max_retries):
@@ -62,7 +62,7 @@ def create_link_and_get_transactions():
                 return jsonify(result), 200
             else:
                 time.sleep(1)  # Esperar 1 segundo antes de reintentar
-        
-        return {"error": "Failed to fetch transactions after multiple attempts", "details": response_transactions.text}, response_transactions.status_code
+        print(f"response_transactions.json() {response_transactions.json()}", flush=True)
+        return jsonify(response_transactions.json()), 200
     else:
-        return {"error": "Failed to create link", "details": response_link.text}, response_link.status_code
+        return jsonify({"error": "Failed to create link", "details": response_link.text}), response_link.status_code
